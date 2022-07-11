@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1657499692 source:/home/denis/GitHub/HW04/Libcurl /main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<curl/curl.h>
+	"cJSON.h"
+
+1648537379 /home/denis/GitHub/HW04/Libcurl /cJSON.h
+	<stddef.h>
+
