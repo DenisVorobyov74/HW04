@@ -90,7 +90,6 @@ void PrintWeatherForecast(struct MemoryStruct* chunk){
 
     // Дневной диапазон температуры
     Tmp3 = FullMsg->child->next->next->next;
-    //Tmp3 = cJSON_GetArrayItem(*FullMsg->child->next->next->next->child, 3);
     Tmp2 = cJSON_GetArrayItem(Tmp3->child, 5);
     Tmp1 = cJSON_GetArrayItem(Tmp3->child, 7);
     printf("Temperature (C): %s - %s\n", Tmp1->valuestring, Tmp2->valuestring);
