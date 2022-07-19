@@ -12,23 +12,22 @@ struct MemoryStruct {
 };
 
 void GetCityName(int argc, char* argv[], char CityNameArray[CityName_Size]);
-void KeepOpenWindow();
 void PrintWeatherForecast(struct MemoryStruct* chunk);
 char* GetURL(char CityNameArray[CityName_Size]);
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
 size_t strlcpy(char *dst, const char *src, size_t dsize);
 
-int main(int argc, char* argv[0]) {
+int main(int argc, char* argv[]) {
 
     char CityNameArray[CityName_Size];
     CURL *curl_handle;
     CURLcode res;
     struct MemoryStruct chunk;
+    char* URLAddr;
 
     GetCityName(argc, argv, CityNameArray);
     if(strlen(CityNameArray) == 0){
         printf("\nUnknown city.Execution aborted.\n");
-        KeepOpenWindow();
         return 1;
     }
 
@@ -41,7 +40,8 @@ int main(int argc, char* argv[0]) {
     curl_handle = curl_easy_init();
 
     /* specify URL to get */
-    curl_easy_setopt(curl_handle, CURLOPT_URL, GetURL(CityNameArray));
+    URLAddr = GetURL(CityNameArray);
+    curl_easy_setopt(curl_handle, CURLOPT_URL, URLAddr);
 
     /* send all data to this function  */
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
@@ -66,7 +66,7 @@ int main(int argc, char* argv[0]) {
     curl_easy_cleanup(curl_handle);
 
     free(chunk.memory);
-
+    free(URLAddr);
     /* we are done with libcurl, so clean it up */
     curl_global_cleanup();
 
@@ -94,7 +94,7 @@ void PrintWeatherForecast(struct MemoryStruct* chunk){
     Tmp1 = cJSON_GetArrayItem(Tmp3->child, 7);
     printf("Temperature (C): %s - %s\n", Tmp1->valuestring, Tmp2->valuestring);
 
-    KeepOpenWindow();
+    cJSON_Delete(FullMsg);
 
 }
 
@@ -106,7 +106,6 @@ char* GetURL(char CityNameArray[CityName_Size]){
     strcat(URL, "https://wttr.in/");
     strcat(URL,  CityNameArray);
     strcat(URL, "?format=j1");
-    *(URL + 33) = '\0';
 
     return URL;
 }
@@ -128,12 +127,6 @@ void GetCityName(int argc, char* argv[], char CityNameArray[CityName_Size]){
     }
 }
 
-// Просто держит окно терминала открытым.
-void KeepOpenWindow(){
-
-    char EmptyEnter[1];
-    scanf("%1s", EmptyEnter);
-}
 
 size_t strlcpy(char *dst, const char *src, size_t dsize) {
 
